@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный тест</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+<body>
+
+<div class="container">
+    <div id="welcome">
+        <h2>💖 Приветик, котенок! 💖</h2>
+        <p>Пройди тест, чтобы получить мини-бонус!</p>
+        <button type="button" onclick="startTest()">Далее</button>
+    </div>
+
+    <div id="quiz" style="display:none;">
+        <h1 id="question"></h1>
+        <form id="pollForm"></form>
+        <h2 id="feedback"></h2>
+    </div>
+
+    <div id="bonus" style="display:none; text-align:center;">
+        <h1 id="bonusText"></h1>
+        <button id="bonusBtn" onclick="openComic()" style="display:none;">Открывай! </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+    const questions = [
+        {
+            question: "Кого я больше люблю?",
+            options: ["Тебя", "Тебя", "Тебя"],
+            correct: "Тебя"
+        },
+        {
+            question: "Когда мы начали встречаться?",
+            options: ["10.12.2025", "11.12.2025", "12.12.2025"],
+            correct: "10.12.2025"
+        },
+        {
+            question: "Какой первый рисунок ты мне подарила?",
+            options: ["Планктон", "Грю", "Миньон"],
+            correct: "Грю"
+        }
+    ];
+
+    let current = 0;
+
+    function startTest() {
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('quiz').style.display = 'block';
+        showQuestion(current);
+    }
+
+    function checkAnswer() {
+        const choices = document.getElementsByName('answer');
+        let selected = '';
+        for (const choice of choices) {
+            if (choice.checked) {
+                selected = choice.value;
+                break;
+            }
+        }
+
+        if (selected === '') {
+            alert('Выберите вариант!');
+            return;
+        }
+
+        if (selected === questions[current].correct) {
+            document.getElementById('feedback').innerText = "✅ Верно! 💖";
+            current++;
+            if (current < questions.length) {
+                showQuestion(current);
+            } else {
+                showBonus();
+            }
+        } else {
+            document.getElementById('feedback').innerText = "😠 Неверно. Попробуй снова!";
+        }
+    }
+
+    function showQuestion(index) {
+        const q = questions[index];
+        document.getElementById('question').innerText = q.question;
+        const form = document.getElementById('pollForm');
+        let html = '';
+        for (const option of q.options) {
+            html += `<input type="radio" name="answer" value="${option}"> ${option}<br>`;
+        }
+        html += `<br><button type="button" onclick="checkAnswer()">Ответить</button>`;
+        form.innerHTML = html;
+        document.getElementById('feedback').innerText = '';
+    }
+
+    function showBonus() {
+        document.getElementById('quiz').style.display = 'none';
+        document.getElementById('bonus').style.display = 'block';
+        document.getElementById('bonusText').innerText = "Мини-бонус твой! 💖💖💖";
+        document.getElementById('bonusBtn').style.display = 'inline-block';
+        // Конфетти
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }
+
+    function openComic() {
+        
+        window.open('https://drive.google.com/file/d/1YsfZ6s2F8MW3NWSk-jZXfR9X3MsEz8Lr/view?usp=sharing', '_blank');
+    }
+</script>
+
+</body>
+</html>
